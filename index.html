@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AZ Currency Converter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: #f8fbff;
+      color: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .logo {
+      background: #007BFF;
+      color: white;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 22px;
+      margin-right: 15px;
+    }
+    h1 {
+      font-size: 28px;
+      color: #007BFF;
+    }
+    .converter {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .row {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      background: #007BFF;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0056cc;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+      color: #007BFF;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">AZ</div>
+    <h1>Currency Converter</h1>
+  </header>
+
+  <div class="converter">
+    <div class="row">
+      <label>Amount</label>
+      <input type="number" id="amount" placeholder="Enter amount" />
+    </div>
+    <div class="row">
+      <label>From Currency</label>
+      <select id="from"></select>
+    </div>
+    <div class="row">
+      <label>To Currency</label>
+      <select id="to"></select>
+    </div>
+    <button onclick="convertCurrency()">Convert</button>
+    <div class="result" id="result">—</div>
+  </div>
+
+  <script>
+    const fromSelect = document.getElementById('from');
+    const toSelect = document.getElementById('to');
+    const resultDiv = document.getElementById('result');
+
+    async function loadCurrencies() {
+      const res = await fetch('https://api.exchangerate.host/symbols');
+      const data = await res.json();
+      const symbols = data.symbols;
+      for (let code in symbols) {
+        const option1 = document.createElement('option');
+        const option2 = document.createElement('option');
+        option1.value = option2.value = code;
+        option1.textContent = option2.textContent = ${code} - ${symbols[code].description};
+        fromSelect.appendChild(option1);
+        toSelect.appendChild(option2);
+      }
+      fromSelect.value = 'USD';
+      toSelect.value = 'PKR';
+    }
+
+    async function convertCurrency() {
+      const amount = document.getElementById('amount').value;
+      const from = fromSelect.value;
+      const to = toSelect.value;
+      if (!amount) {
+        resultDiv.textContent = "Enter amount first!";
+        return;
+      }
+      const res = await fetch(https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount});
+      const data = await res.json();
+      resultDiv.textContent = ${amount} ${from} = ${data.result.toFixed(2)} ${to};
+    }
+
+    loadCurrencies();
+  </script>
+</body>
+</html>
